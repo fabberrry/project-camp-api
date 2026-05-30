@@ -1,0 +1,22 @@
+{
+  "name": "projectcamp",
+  "version": "1.0.0",
+  "description": "A Project Management application",
+  "keywords": [
+    "backend",
+    "API",
+    "creation"
+  ],
+  "license": "ISC",
+  "author": "fabberry",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "devDependencies": {
+    "prettier": "3.8.3"
+  }
+}
