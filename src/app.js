@@ -7,6 +7,11 @@ app.use(express.json({limit: "16kb"}));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 
+// after cors , do a healthcheck route
+import healthCheckRoutes from "./routes/healthcheckroutes.js";
+
+app.use("/api/v1/healthcheck", healthCheckRoutes);
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN
