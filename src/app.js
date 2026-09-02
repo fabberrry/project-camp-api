@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 
 // after cors , do a healthcheck route
-import healthCheckRoutes from "./routes/healthcheckroutes.js";
+import healthCheckRoutes from "./routes/healthcheck.routes.js";
 
 app.use("/api/v1/healthcheck", healthCheckRoutes);
 
