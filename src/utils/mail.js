@@ -1,4 +1,44 @@
 import Mailgen from "mailgen";
+import nodemailer from "nodemailer";
+
+const sendEmail = async (options) => {
+  // create a mail generator
+  const mailGenerator = new Mailgen({
+    theme: "default",
+    product: {
+      name: "Task Manager",
+      link: "https://taskmanager.com/",
+    },
+  });
+  // generate an email
+  const emailTextual = mailGenerator.generatePlaintext(options.mailgencontent);
+  const emailHTML = mailGenerator.generate(options.mailgencontent);
+
+  // create the transporter
+  const transporter = nodemailer.createTransport({
+    host: process.env.MAILGEN_SMTP_HOST,
+    port: process.env.MAILGEN_SMTP_PORT,
+    auth: {
+      user: process.env.MAILGEN_SMTP_USER,
+      pass: process.env.MAILGEN_SMTP_PASS,
+    },
+  });
+
+  const mail = {
+    from: "mail.taskmanager@example.com",
+    to: options.to,
+    subject: options.subject,
+    text: emailTextual,
+    html: emailHTML,
+  };
+
+  // send the email
+  try {
+    await transporter.sendMail(mail);
+  } catch (error) {
+    console.log(error);
+  }
+};
 const emailVerficationMailGenerator = (username, verficationurl) => {
   return {
     body: {
@@ -37,4 +77,4 @@ const forgotPasswordMailGenerator = (username, resetPasswordUrl) => {
     },
   };
 };
-export { emailVerficationMailGenerator, forgotPasswordMailGenerator };
+export { emailVerficationMailGenerator, forgotPasswordMailGenerator ,sendEmail};
