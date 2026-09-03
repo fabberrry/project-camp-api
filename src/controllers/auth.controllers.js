@@ -1,10 +1,10 @@
 // query the user model from the db
 import { User } from "../models/user.models.js";
 //utils
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { apiError } from "../utils/apiError.js";
-import { sendEmail } from "../utils/sendEmail.js";
+import { ApiError } from "../utils/api-error.js";
+import { sendEmail } from "../utils/mail.js";
 // generate access token and refresh token
 const generateTokens = async (userId) => {
   try {
