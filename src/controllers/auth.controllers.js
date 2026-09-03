@@ -4,7 +4,9 @@ import { User } from "../models/user.models.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/api-error.js";
-import { sendEmail } from "../utils/mail.js";
+import {   emailVerficationMailGeneratorContent,
+  forgotPasswordMailGeneratorContent,
+  sendEmail } from "../utils/mail.js";
 // generate access token and refresh token
 const generateTokens = async (userId) => {
   try {
@@ -17,7 +19,7 @@ const generateTokens = async (userId) => {
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new apiError(500, "Something went wrong while generating tokens");
+    throw new ApiError(500, "Something went wrong while generating tokens");
   }
 
   //   const accessToken = User.generateAT(userId);
@@ -36,7 +38,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const existingUser = await User.findOne({ $or: [{ email }, { username }] });
 
   if (existingUser) {
-    throw new apiError(400, "User already exists");
+    throw new ApiError(400, "User already exists");
   }
 
   // else create a new user
@@ -72,7 +74,7 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!createdUser) {
-    throw new apiError(500, "Something went wrong while fetching the user");
+    throw new ApiError(500, "Something went wrong while fetching the user");
   }
 
   // send the email verification link to the user RESPONSE
