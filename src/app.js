@@ -9,8 +9,9 @@ app.use(express.static("public"));
 
 // after cors , do a healthcheck route
 import healthCheckRoutes from "./routes/healthcheck.routes.js";
-
+import authRoutes from "./routes/auth.routes.js";
 app.use("/api/v1/healthcheck", healthCheckRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 app.use(
   cors({
