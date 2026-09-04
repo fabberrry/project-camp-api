@@ -7,10 +7,10 @@ import {registerUser,login} from "../controllers/auth.controllers.js";
 
 
 
-import { userRegisterValiator } from "../validators/index.js";
+import { userLoginValidator, userRegisterValiator } from "../validators/index.js";
 import { validateRequest } from "../middlewares/validator.middleware.js";
-router.route("/register").post(userRegisterValiator(), validateRequest, registerUser);
-router.route("/login").post(login);
+router.route("/register").post(userRegisterValiator(), validateRequest, registerUser); 
+router.route("/login").post(userLoginValidator(),validateRequest,login);
 
 
 
