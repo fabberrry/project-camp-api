@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-const userRegisterValiator = () => {
+const userRegisterValidator = () => {
   return [
     body("email")
       .trim()
@@ -31,4 +31,4 @@ const userLoginValidator = () => {
     body("password").trim().notEmpty().withMessage("Password is required"),
   ];
 };
-export { userLoginValidator,userRegisterValiator };
+export { userLoginValidator,userRegisterValidator };
