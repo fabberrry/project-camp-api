@@ -4,9 +4,13 @@ import { User } from "../models/user.models.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/api-error.js";
-import {   emailVerficationMailGeneratorContent,
+import {
+  emailVerficationMailGeneratorContent,
   forgotPasswordMailGeneratorContent,
-  sendEmail } from "../utils/mail.js";
+  sendEmail,
+} from "../utils/mail.js";
+import { trusted } from "mongoose";
+
 // generate access token and refresh token
 const generateTokens = async (userId) => {
   try {
@@ -15,7 +19,7 @@ const generateTokens = async (userId) => {
     const refreshToken = user.generateRT();
     // rewrite the refresh token in the mongooge document ie object in local memory
     user.refreshToken = refreshToken;
-    // updating the real document in db 
+    // updating the real document in db
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
   } catch (error) {
@@ -89,4 +93,49 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser };
+const login = asyncHandler(async (req, res) => {
+  const { email, password, username } = req.body();
+  if (!email) {
+    throw new ApiError(400, "Username or Email is req");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(400, "User doest not exists");
+  }
+
+  const isPasswordValid = user.isPasswordCorrect(password);
+  if (!isPasswordValid) {
+    throw new ApiError(400, "Invalid credentials");
+  }
+
+  const { accessToken, refreshToken } = await generateTokens(user._id);
+
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in successfully",
+      ),
+    );
+
+
+});
+
+export { registerUser,login };
