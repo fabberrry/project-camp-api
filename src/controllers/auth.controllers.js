@@ -273,6 +273,37 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+const forgotPasswordRequest = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(401, "Email does not exist");
+  }
+  const { unhashedtoken, hashedToken, tokenExpiry } =
+    user.generateTemperoryToken();
+
+  user.forgotPasswordToken = hashedToken;
+  user.forgotPasswordTokenExpiry = tokenExpiry;
+  await user.save({ validateBeforeSave: false });
+
+  await user.sendEmail({
+    to: user?.email,
+    subject: "Password Reset Req",
+    mailgencontent: forgotPasswordMailGeneratorContent(
+      user.username,
+      `${process.env.FORGOT_PASSWORD_REDIRECT_URL}/${unhashedtoken}`,
+    ),
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        "Password mail reset mail has been send to your email",
+      ),
+    );
+});
 // const verifyEmail=asyncHandler(async(req,res)=>{})
 export {
   registerUser,
@@ -281,5 +312,5 @@ export {
   getCurrentUser,
   verifyEmail,
   resendEmailVerification,
-  refreshAccessToken
+  refreshAccessToken,
 };
