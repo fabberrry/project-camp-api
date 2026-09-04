@@ -9,7 +9,7 @@ import {
   forgotPasswordMailGeneratorContent,
   sendEmail,
 } from "../utils/mail.js";
-import { trusted } from "mongoose";
+
 
 // generate access token and refresh token
 const generateTokens = async (userId) => {
