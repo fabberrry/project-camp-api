@@ -9,6 +9,7 @@ import {
   forgotPasswordMailGeneratorContent,
   sendEmail,
 } from "../utils/mail.js";
+import crypto from "crypto";
 
 // generate access token and refresh token
 const generateTokens = async (userId) => {
@@ -163,5 +164,41 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, req.user, "Current User fetched Successfully"));
 });
-// const getCurrentUser=asyncHandler(async(req,res)=>{})
-export { registerUser, login, logoutUser ,getCurrentUser};
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { verificationToken } = req.params;
+  if (!verificationToken) {
+    throw new ApiError(400, "Email verification token is missing");
+  }
+
+  let hashedToken = crypto
+    .createHash("sha256")
+    .update(verificationToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    emailVerificationToken: hashedToken,
+    emailVerificationTokenExpiry: { $gt: Date.now() },
+  });
+  if (!user) {
+    throw new ApiError(400, "Token is expired");
+  }
+
+  user.emailVerificationToken = undefined;
+  user.emailVerificationTokenExpiry = undefined;
+
+  user.isEmailVerified = true;
+  await user.save({ validateBeforeSave: false });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        isEmailVerified: true,
+      },
+      "Email is verified",
+    ),
+  );
+});  
+
+// const verifyEmail=asyncHandler(async(req,res)=>{})
+export { registerUser, login, logoutUser, getCurrentUser, verifyEmail };
