@@ -281,4 +281,5 @@ export {
   getCurrentUser,
   verifyEmail,
   resendEmailVerification,
+  refreshAccessToken
 };
