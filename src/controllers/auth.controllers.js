@@ -286,7 +286,7 @@ const forgotPasswordRequest = asyncHandler(async (req, res) => {
   user.forgotPasswordTokenExpiry = tokenExpiry;
   await user.save({ validateBeforeSave: false });
 
-  await user.sendEmail({
+  await sendEmail({
     to: user?.email,
     subject: "Password Reset Req",
     mailgencontent: forgotPasswordMailGeneratorContent(
