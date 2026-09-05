@@ -7,7 +7,7 @@ import {registerUser,login, logoutUser, verifyEmail, refreshAccessToken, forgotP
 
 
 
-import { resetForgotPasswordValidator, userForgetPasswordValidator, userLoginValidator, userRegisterValidator } from "../validators/index.js";
+import { resetForgotPasswordValidator, userChangeCurrentPasswordValidator, userForgetPasswordValidator, userLoginValidator, userRegisterValidator } from "../validators/index.js";
 import { validateRequest } from "../middlewares/validator.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 //unsecured routes
@@ -28,8 +28,8 @@ router.route("/reset-password/:resetToken").post|(resetForgotPasswordValidator()
 
 // secured routes
 router.route("/logout").post(verifyJwt,logoutUser);
-router.route("/current-user").post(verifyJwt,getCurrentUser);
-router.route("/change-password").post(verifyJwt,userForgetPasswordValidator(),validateRequest,changeCurrentPassword);
+router.route("/current-user").get(verifyJwt,getCurrentUser);
+router.route("/change-password").post(verifyJwt,userChangeCurrentPasswordValidator(),validateRequest,changeCurrentPassword);
 router.route("/resend-email-verification").post(verifyJwt,resendEmailVerification);
 
 
