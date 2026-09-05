@@ -338,4 +338,6 @@ export {
   verifyEmail,
   resendEmailVerification,
   refreshAccessToken,
+  forgotPasswordRequest,
+  resetForgotPassword
 };
