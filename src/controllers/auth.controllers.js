@@ -126,12 +126,12 @@ const login = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
+        "User logged in successfully",
         {
           user: loggedInUser,
           accessToken,
           refreshToken,
         },
-        "User logged in successfully",
       ),
     );
 });
@@ -192,10 +192,10 @@ const verifyEmail = asyncHandler(async (req, res) => {
   return res.status(200).json(
     new ApiResponse(
       200,
+      "Email is verified",
       {
         isEmailVerified: true,
       },
-      "Email is verified",
     ),
   );
 });
