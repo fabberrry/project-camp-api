@@ -77,4 +77,32 @@ const forgotPasswordMailGeneratorContent = (username, resetPasswordUrl) => {
     },
   };
 };
-export { emailVerficationMailGeneratorContent, forgotPasswordMailGeneratorContent ,sendEmail};
+
+const projectAddedMailGeneratorContent = (
+  username,
+  projectName,
+  projectUrl
+) => {
+  return {
+    body: {
+      name: username,
+
+      intro: `${username},you have been added to the project "${projectName}".`,
+
+      action: {
+        instructions: "Click the button below to view the project:",
+        button: {
+          color: "#22BC66",
+          text: "View Project",
+          link: projectUrl,
+        },
+      },
+
+      outro:
+        "You are receiving this email because you were added as a member of this project.",
+    },
+  };
+};
+
+
+export { emailVerficationMailGeneratorContent, forgotPasswordMailGeneratorContent ,projectAddedMailGeneratorContent,sendEmail};
