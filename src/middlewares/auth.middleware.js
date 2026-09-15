@@ -28,7 +28,7 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
 });
 
 export const validateProjectPermission = (roles = []) => {
-  asyncHandler(async (req, res, next) => {
+  return asyncHandler(async (req, res, next) => {
     const { projectid } = req.params;
     if (!projectid) {
       throw new ApiError(404, "Id not found");
@@ -36,7 +36,7 @@ export const validateProjectPermission = (roles = []) => {
 
     const projectMbrDoc = await projectMember.findOne({
       project: new mongoose.Types.ObjectId(projectid),
-      project: new mongoose.Types.ObjectId(req.user._id),
+      user: new mongoose.Types.ObjectId(req.user._id),
     });
     if (!projectMbrDoc) {
       throw new ApiError(404, "not found");
@@ -44,7 +44,7 @@ export const validateProjectPermission = (roles = []) => {
 
     const givenRole = projectMbrDoc?.role;
     req.user.role = givenRole;
-    if (roles.includes(givenRole)) {
+    if (!roles.includes(givenRole)) {
       throw ApiError(404, "You dont have permission to perform this action");
     }
     next();
